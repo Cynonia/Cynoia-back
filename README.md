@@ -1,6 +1,6 @@
 # Cynoia Backend
 
-Simple and clean backend API for Cynoia user management system, built with **Express.js**, **TypeScript**, and **MongoDB**.
+Simple and clean backend API for Cynoia worspace management system, built with **Express.js**, **TypeScript**, and **MongoDB**.
 
 ## 🚀 Features
 
