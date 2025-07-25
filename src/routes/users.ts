@@ -5,7 +5,7 @@ const router = Router()
 
 /**
  * @swagger
- * /api/users/profile:
+ * /api/v1/users/profile:
  *   get:
  *     summary: Get user profile
  *     description: Retrieve the authenticated user's profile information

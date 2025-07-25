@@ -5,7 +5,7 @@ const router = Router()
 
 /**
  * @swagger
- * /api/auth/register:
+ * /api/v1/auth/register:
  *   post:
  *     summary: Register a new user
  *     description: Create a new user account
@@ -60,7 +60,7 @@ router.post('/register', (_req: any, res: any) => {
 
 /**
  * @swagger
- * /api/auth/login:
+ * /api/v1/auth/login:
  *   post:
  *     summary: User login
  *     description: Authenticate user and return JWT token
