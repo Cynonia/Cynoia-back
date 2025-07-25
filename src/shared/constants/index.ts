@@ -10,8 +10,8 @@ export const HTTP_STATUS = {
 } as const
 
 export const USER_ROLES = {
-  USER: 'USER',
-  ADMIN: 'ADMIN',
+  USER: 'user',
+  ADMIN: 'admin',
 } as const
 
 export const JWT_EXPIRES_IN = '7d' as const
