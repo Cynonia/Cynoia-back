@@ -1,6 +1,11 @@
 import { Router } from 'express'
 import { HTTP_STATUS } from '@/shared/constants'
 
+interface RouteResponse {
+  status: (code: number) => RouteResponse
+  json: (data: { success: boolean; message: string }) => void
+}
+
 const router = Router()
 
 /**
@@ -51,8 +56,8 @@ const router = Router()
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.post('/register', (_req: any, res: any) => {
-  return res.status(HTTP_STATUS.NOT_FOUND).json({
+router.post('/register', (_req: unknown, res: unknown) => {
+  return (res as RouteResponse).status(HTTP_STATUS.NOT_FOUND).json({
     success: false,
     message: 'Register endpoint not implemented yet',
   })
@@ -108,8 +113,8 @@ router.post('/register', (_req: any, res: any) => {
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.post('/login', (_req: any, res: any) => {
-  return res.status(HTTP_STATUS.NOT_FOUND).json({
+router.post('/login', (_req: unknown, res: unknown) => {
+  return (res as RouteResponse).status(HTTP_STATUS.NOT_FOUND).json({
     success: false,
     message: 'Login endpoint not implemented yet',
   })

@@ -1,10 +1,14 @@
 import { Schema, model } from 'mongoose'
 import type { Document } from 'mongoose'
 import bcrypt from 'bcryptjs'
-import type { User as UserType } from '@/types'
 import { BCRYPT_SALT_ROUNDS, USER_ROLES } from '@/shared/constants'
 
-interface UserDocument extends Omit<UserType, '_id'>, Document {
+interface UserDocument extends Document {
+  name: string
+  email: string
+  password: string
+  role: keyof typeof USER_ROLES
+  isActive: boolean
   comparePassword(candidatePassword: string): Promise<boolean>
 }
 
@@ -34,8 +38,8 @@ const userSchema = new Schema<UserDocument>(
     },
     role: {
       type: String,
-      enum: Object.values(USER_ROLES),
-      default: USER_ROLES.USER,
+      enum: ['USER', 'ADMIN'] as const,
+      default: 'USER',
     },
     isActive: {
       type: Boolean,
@@ -50,7 +54,7 @@ const userSchema = new Schema<UserDocument>(
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next()
 
-  this.password = await bcrypt.hash(this.password!, BCRYPT_SALT_ROUNDS)
+  this.password = await bcrypt.hash(this.password, BCRYPT_SALT_ROUNDS)
   next()
 })
 

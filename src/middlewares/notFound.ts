@@ -1,7 +1,16 @@
-import type { Request, Response, RequestHandler } from 'express'
+import { HTTP_STATUS } from '@/shared/constants'
 
-export const notFound: RequestHandler = (req: Request, res: Response): void => {
-  res.status(404).json({
+interface NotFoundRequest {
+  originalUrl: string
+}
+
+interface NotFoundResponse {
+  status: (code: number) => NotFoundResponse
+  json: (data: { success: boolean; message: string }) => void
+}
+
+export const notFound = (req: NotFoundRequest, res: NotFoundResponse) => {
+  res.status(HTTP_STATUS.NOT_FOUND).json({
     success: false,
     message: `Not Found - ${req.originalUrl}`,
   })

@@ -10,9 +10,9 @@ export const HTTP_STATUS = {
 } as const
 
 export const USER_ROLES = {
-  USER: 'user',
-  ADMIN: 'admin',
+  USER: 'USER',
+  ADMIN: 'ADMIN',
 } as const
 
-export const JWT_EXPIRES_IN = '7d'
-export const BCRYPT_SALT_ROUNDS = 12
+export const JWT_EXPIRES_IN = '7d' as const
+export const BCRYPT_SALT_ROUNDS = 12 as const

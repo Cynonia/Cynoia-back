@@ -1,27 +1,40 @@
-import type { Request, Response, NextFunction } from 'express'
-import { ZodSchema, ZodError } from 'zod'
+import { NextFunction } from 'express'
+import { z, ZodSchema } from 'zod'
+import { HTTP_STATUS } from '@/shared/constants'
 
-export const validate = <T>(schema: ZodSchema<T>) => {
-  return (req: Request, res: Response, next: NextFunction): void => {
+interface ValidatedRequest {
+  body: unknown
+}
+
+interface ValidationResponse {
+  status: (code: number) => ValidationResponse
+  json: (data: { success: boolean; message: string }) => void
+}
+
+const validate = (schema: ZodSchema) => {
+  return (req: ValidatedRequest, res: ValidationResponse, next: NextFunction) => {
     try {
       schema.parse(req.body)
       next()
     } catch (error) {
-      if (error instanceof ZodError) {
+      if (error instanceof z.ZodError) {
         const message = error.errors
-          .map(err => `${err.path.join('.')}: ${err.message}`)
+          .map((err) => `${err.path.join('.')}: ${err.message}`)
           .join(', ')
-        res.status(400).json({
+        
+        res.status(HTTP_STATUS.BAD_REQUEST).json({
           success: false,
           message: `Validation error: ${message}`,
         })
         return
       }
-
-      res.status(400).json({
+      
+      res.status(HTTP_STATUS.BAD_REQUEST).json({
         success: false,
         message: 'Validation error',
       })
     }
   }
 }
+
+export default validate

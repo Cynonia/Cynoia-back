@@ -1,76 +1,98 @@
-import { Response, NextFunction } from 'express'
-import jwt from 'jsonwebtoken'
+import { NextFunction } from 'express'
 import User from '@/models/User'
+import { jwtConfig } from '@/config/jwt'
+import { HTTP_STATUS } from '@/shared/constants'
 import type {
   AuthenticatedRequest,
-  JWTPayload,
   User as UserType,
 } from '@/types'
 
+interface AuthRequest extends AuthenticatedRequest {
+  headers: {
+    authorization?: string
+  }
+}
+
+interface AuthResponse {
+  status: (code: number) => AuthResponse
+  json: (data: { success: boolean; message: string }) => void
+}
+
+const extractToken = (authHeader?: string) => {
+  if (!authHeader?.startsWith('Bearer ')) return null
+  return authHeader.slice(7)
+}
+
+const sendUnauthorized = (res: AuthResponse, message = 'Access denied') => {
+  res.status(HTTP_STATUS.UNAUTHORIZED).json({
+    success: false,
+    message,
+  })
+}
+
+const sendForbidden = (res: AuthResponse, message = 'Access forbidden') => {
+  res.status(HTTP_STATUS.FORBIDDEN).json({
+    success: false,
+    message,
+  })
+}
+
 export const auth = async (
-  req: AuthenticatedRequest,
-  res: Response,
+  req: AuthRequest,
+  res: AuthResponse,
   next: NextFunction
-): Promise<void> => {
+) => {
   try {
-    const authHeader = req.headers.authorization
-    const token = authHeader?.replace('Bearer ', '')
+    const token = extractToken(req.headers?.authorization)
 
     if (!token) {
-      res.status(401).json({
-        success: false,
-        message: 'Access denied. No token provided.',
-      })
+      sendUnauthorized(res, 'No token provided.')
       return
     }
 
-    const jwtSecret = process.env.JWT_SECRET
-    if (!jwtSecret) {
-      throw new Error('JWT_SECRET is not defined')
+    const decoded = jwtConfig.verifyToken(token)
+    
+    if (!decoded?.id) {
+      sendUnauthorized(res, 'Invalid token payload.')
+      return
     }
 
-    const decoded = jwt.verify(token, jwtSecret) as JWTPayload
     const user = await User.findById(decoded.id)
       .select('-password')
       .lean<UserType>()
 
+    if (!user?.isActive) {
+      sendUnauthorized(res, 'User account is inactive.')
+      return
+    }
+
     if (!user) {
-      res.status(401).json({
-        success: false,
-        message: 'Token is not valid.',
-      })
+      sendUnauthorized(res, 'User not found.')
       return
     }
 
     req.user = user
     next()
   } catch (error) {
-    res.status(401).json({
-      success: false,
-      message: 'Token is not valid.',
-    })
+    sendUnauthorized(res, 'Invalid token.')
   }
 }
 
-export const authorize = (...roles: UserType['role'][]) => {
+export const authorize = (...roles: ReadonlyArray<UserType['role']>) => {
   return (
-    req: AuthenticatedRequest,
-    res: Response,
+    req: AuthRequest,
+    res: AuthResponse,
     next: NextFunction
-  ): void => {
-    if (!req.user) {
-      res.status(401).json({
-        success: false,
-        message: 'Access denied.',
-      })
+  ) => {
+    const user = req.user
+
+    if (!user) {
+      sendUnauthorized(res)
       return
     }
 
-    if (!roles.includes(req.user.role)) {
-      res.status(403).json({
-        success: false,
-        message: 'Access forbidden. Insufficient permissions.',
-      })
+    if (!roles.includes(user.role)) {
+      sendForbidden(res, 'Insufficient permissions.')
       return
     }
 

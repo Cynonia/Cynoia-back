@@ -59,8 +59,8 @@ if (process.env.NODE_ENV !== 'production') {
  *               $ref: '#/components/schemas/HealthCheck'
  */
 // Health check endpoint
-app.get('/health', (_req: any, res: any) => {
-  res.status(200).json({
+app.get('/health', (_req: unknown, res: unknown) => {
+  ;(res as { status: (code: number) => { json: (data: unknown) => void } }).status(200).json({
     status: 'OK',
     timestamp: new Date().toISOString(),
     uptime: process.uptime()
@@ -73,6 +73,6 @@ app.use(`/api/${apiVersion}/auth`, authRoutes)
 app.use(`/api/${apiVersion}/users`, userRoutes)
 
 app.use(notFound)
-app.use(errorHandler)
+app.use(errorHandler as unknown as express.ErrorRequestHandler)
 
 export default app

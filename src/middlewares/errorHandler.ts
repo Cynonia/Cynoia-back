@@ -1,58 +1,60 @@
-import type {
-  Request,
-  Response,
-  NextFunction,
-  ErrorRequestHandler,
-} from 'express'
+import type { NextFunction } from 'express'
+import { HTTP_STATUS } from '@/shared/constants'
 
 interface CustomError extends Error {
-  statusCode?: number
-  code?: number
+  readonly statusCode?: number
+  readonly code?: number
 }
 
-export const errorHandler: ErrorRequestHandler = (
-  err: CustomError,
-  _req: Request,
-  res: Response,
-  _next: NextFunction
-): void => {
-  let error: CustomError = { ...err }
-  error.message = err.message
-
-  console.error('❌ Error:', err)
-
-  // Mongoose bad ObjectId
+const getErrorMessage = (err: CustomError): { message: string; statusCode: number } => {
   if (err.name === 'CastError') {
-    const message = 'Resource not found'
-    error = { message, statusCode: 404 } as CustomError
+    return { message: 'Resource not found', statusCode: HTTP_STATUS.NOT_FOUND }
   }
 
-  // Mongoose duplicate key
   if (err.code === 11000) {
-    const message = 'Duplicate field value entered'
-    error = { message, statusCode: 400 } as CustomError
+    return { message: 'Duplicate field value entered', statusCode: HTTP_STATUS.BAD_REQUEST }
   }
 
-  // Mongoose validation error
   if (err.name === 'ValidationError') {
-    const message = 'Validation error'
-    error = { message, statusCode: 400 } as CustomError
+    return { message: 'Validation error', statusCode: HTTP_STATUS.BAD_REQUEST }
   }
 
-  // JWT errors
   if (err.name === 'JsonWebTokenError') {
-    const message = 'Invalid token'
-    error = { message, statusCode: 401 } as CustomError
+    return { message: 'Invalid token', statusCode: HTTP_STATUS.UNAUTHORIZED }
   }
 
   if (err.name === 'TokenExpiredError') {
-    const message = 'Token expired'
-    error = { message, statusCode: 401 } as CustomError
+    return { message: 'Token expired', statusCode: HTTP_STATUS.UNAUTHORIZED }
   }
 
-  res.status(error.statusCode || 500).json({
+  return {
+    message: err.message || 'Server Error',
+    statusCode: err.statusCode || HTTP_STATUS.INTERNAL_SERVER_ERROR
+  }
+}
+
+interface ErrorRequest {
+  [key: string]: unknown
+}
+
+interface ErrorResponse {
+  status: (code: number) => ErrorResponse
+  json: (data: { success: boolean; message: string; stack?: string }) => void
+}
+
+export const errorHandler = (
+  err: CustomError,
+  _req: ErrorRequest,
+  res: ErrorResponse,
+  _next: NextFunction
+) => {
+  console.error('❌ Error:', err)
+
+  const { message, statusCode } = getErrorMessage(err)
+
+  res.status(statusCode).json({
     success: false,
-    message: error.message || 'Server Error',
+    message,
     ...(process.env.NODE_ENV === 'development' && { stack: err.stack }),
   })
 }

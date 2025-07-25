@@ -6,9 +6,9 @@ export interface AuthenticatedRequest extends Request {
 }
 
 export interface ApiResponse<T = unknown> {
-  success: boolean
-  message?: string
-  data?: T
+  readonly success: boolean
+  readonly message?: string
+  readonly data?: T
 }
 
 export interface JWTPayload {

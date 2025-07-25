@@ -1,6 +1,11 @@
 import { Router } from 'express'
 import { HTTP_STATUS } from '@/shared/constants'
 
+interface RouteResponse {
+  status: (code: number) => RouteResponse
+  json: (data: { success: boolean; message: string }) => void
+}
+
 const router = Router()
 
 /**
@@ -38,8 +43,8 @@ const router = Router()
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.get('/profile', (_req: any, res: any) => {
-  return res.status(HTTP_STATUS.NOT_FOUND).json({
+router.get('/profile', (_req: unknown, res: unknown) => {
+  return (res as RouteResponse).status(HTTP_STATUS.NOT_FOUND).json({
     success: false,
     message: 'Get profile endpoint not implemented yet',
   })

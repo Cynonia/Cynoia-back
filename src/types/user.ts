@@ -1,21 +1,25 @@
+import type { USER_ROLES } from '@/shared/constants'
+
 export interface User {
-  _id: string
-  name: string
-  email: string
-  password?: string
-  role: 'user' | 'admin'
-  isActive: boolean
-  createdAt: Date
-  updatedAt: Date
+  readonly _id: string
+  readonly name: string
+  readonly email: string
+  readonly password?: string
+  readonly role: keyof typeof USER_ROLES
+  readonly isActive: boolean
+  readonly createdAt: Date
+  readonly updatedAt: Date
 }
 
 export interface UserInput {
-  name: string
-  email: string
-  password: string
+  readonly name: string
+  readonly email: string
+  readonly password: string
 }
 
 export interface LoginCredentials {
-  email: string
-  password: string
+  readonly email: string
+  readonly password: string
 }
+
+export type UserRole = keyof typeof USER_ROLES
