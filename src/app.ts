@@ -38,6 +38,26 @@ if (process.env.NODE_ENV !== 'production') {
 app.use(express.json({ limit: '10mb' }))
 app.use(express.urlencoded({ extended: true }))
 
+// Setup Swagger documentation
+if (process.env.NODE_ENV !== 'production') {
+  setupSwagger(app)
+}
+
+/**
+ * @swagger
+ * /health:
+ *   get:
+ *     summary: Health check endpoint
+ *     description: Returns the current status of the API server
+ *     tags: [Health]
+ *     responses:
+ *       200:
+ *         description: Server is healthy
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/HealthCheck'
+ */
 // Health check endpoint
 app.get('/health', (_req: any, res: any) => {
   res.status(200).json({
