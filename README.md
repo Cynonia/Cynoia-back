@@ -4,7 +4,7 @@ Simple and clean backend API for Cynoia user management system, built with **Exp
 
 ## 🚀 Features
 
-- **TypeScript** with strict configuration and ES2024 target
+- **TypeScript** with strict configuration and ES2022 target
 - **Express.js** with security middlewares (helmet, cors, rate limiting)
 - **MongoDB** with Mongoose ODM and Docker container
 - **JWT Authentication** with bcrypt password hashing
@@ -79,7 +79,7 @@ npm run type-check   # TypeScript type checking
 - **Consistent type imports** using `import type`
 - **Nullish coalescing** (`??`) and optional chaining (`?.`)
 - **Immutable data** with `const` and `readonly` where appropriate
-- **Modern ES2024** features for better performance and readability
+- **Modern ES2022** features for better performance and readability
 - **No explicit any** types - everything properly typed
 - **Functional programming** principles where applicable
 
@@ -95,8 +95,8 @@ API_VERSION=v1
 CORS_ORIGIN=http://localhost:3000
 ```
 
-### Why ES2024?
-ES2024 provides the latest JavaScript features for optimal performance and developer experience while maintaining compatibility with Node.js 20+.
+### Why ES2022?
+ES2022 provides the latest JavaScript features for optimal performance and developer experience while maintaining compatibility with Node.js 20+.
 
 ## 📦 Dependencies
 

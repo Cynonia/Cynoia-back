@@ -1,4 +1,4 @@
-import type { NextFunction } from 'express'
+import type { Request, Response, NextFunction } from 'express'
 import { HTTP_STATUS } from '@/shared/constants'
 
 interface CustomError extends Error {
@@ -6,7 +6,7 @@ interface CustomError extends Error {
   readonly code?: number
 }
 
-const getErrorMessage = (err: CustomError): { message: string; statusCode: number } => {
+const getErrorMessage = (err: CustomError) => {
   if (err.name === 'CastError') {
     return { message: 'Resource not found', statusCode: HTTP_STATUS.NOT_FOUND }
   }
@@ -33,19 +33,10 @@ const getErrorMessage = (err: CustomError): { message: string; statusCode: numbe
   }
 }
 
-interface ErrorRequest {
-  [key: string]: unknown
-}
-
-interface ErrorResponse {
-  status: (code: number) => ErrorResponse
-  json: (data: { success: boolean; message: string; stack?: string }) => void
-}
-
 export const errorHandler = (
   err: CustomError,
-  _req: ErrorRequest,
-  res: ErrorResponse,
+  _req: Request,
+  res: Response,
   _next: NextFunction
 ) => {
   console.error('❌ Error:', err)
