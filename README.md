@@ -39,7 +39,15 @@ src/
 ```bash
 # Install dependencies
 npm install
+```
+#### Using Docker
+```bash
+# Start MongoDB container
+docker-compose up -d
+```
 
+#### Using Podman
+```bash
 # Start MongoDB container
 sudo podman run -d --name cynoia-mongo -p 27017:27017 \
   -e MONGO_INITDB_ROOT_USERNAME=admin \
@@ -49,6 +57,10 @@ sudo podman run -d --name cynoia-mongo -p 27017:27017 \
   docker.io/library/mongo:7.0
 
 # Start development server
+npm run dev
+```
+#### Start development server
+```bash
 npm run dev
 ```
 
