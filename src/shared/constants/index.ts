@@ -16,3 +16,4 @@ export const USER_ROLES = {
 
 export const JWT_EXPIRES_IN = '7d' as const
 export const BCRYPT_SALT_ROUNDS = 12 as const
+export const JWT_SECRET = process.env.JWT_SECRET || "mysecretkeyismyfuckingsecretkey"

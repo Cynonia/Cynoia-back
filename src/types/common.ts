@@ -16,3 +16,8 @@ export interface JWTPayload {
   readonly iat?: number
   readonly exp?: number
 }
+
+export interface RouteResponse {
+  status: (code: number) => RouteResponse
+  json: (data: { success: boolean; message: string }) => void
+}

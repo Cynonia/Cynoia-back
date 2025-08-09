@@ -1,10 +1,6 @@
 import { Router } from 'express'
-import { HTTP_STATUS } from '@/shared/constants'
+import { login, register } from '@/controllers/auth.controller';
 
-interface RouteResponse {
-  status: (code: number) => RouteResponse
-  json: (data: { success: boolean; message: string }) => void
-}
 
 const router = Router()
 
@@ -56,12 +52,7 @@ const router = Router()
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.post('/register', (_req: unknown, res: unknown) => {
-  return (res as RouteResponse).status(HTTP_STATUS.NOT_FOUND).json({
-    success: false,
-    message: 'Register endpoint not implemented yet',
-  })
-})
+router.post('/register',register)
 
 /**
  * @swagger
@@ -113,11 +104,6 @@ router.post('/register', (_req: unknown, res: unknown) => {
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.post('/login', (_req: unknown, res: unknown) => {
-  return (res as RouteResponse).status(HTTP_STATUS.NOT_FOUND).json({
-    success: false,
-    message: 'Login endpoint not implemented yet',
-  })
-})
+router.post('/login',login)
 
 export default router

@@ -38,7 +38,7 @@ const userSchema = new Schema<UserDocument>(
     },
     role: {
       type: String,
-      enum: ['USER', 'ADMIN'] as const,
+      enum: Object.values(USER_ROLES),
       default: 'USER',
     },
     isActive: {
