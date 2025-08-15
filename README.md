@@ -1,72 +1,83 @@
 # Cynoia Backend
 
-Simple and clean backend API for Cynoia worspace management system, built with **Express.js**, **TypeScript**, and **MongoDB**.
+Backend API for Cynoia workspace management system, built with **Express.js**, **TypeScript**, **Prisma**, and **PostgreSQL**.
 
 ## 🚀 Features
 
-- **TypeScript** with strict configuration and ES2022 target
+- **TypeScript** (strict, ES2022 target)
 - **Express.js** with security middlewares (helmet, cors, rate limiting)
-- **MongoDB** with Mongoose ODM and Docker container
+- **Prisma ORM** with PostgreSQL (Docker/Podman ready)
 - **JWT Authentication** with bcrypt password hashing
 - **Input Validation** using Zod schemas
 - **Error Handling** with custom middleware
-- **OpenAPI/Swagger** documentation at `/api-docs`
-- **Code Quality** with ESLint and Prettier
-- **Hot Reload** development environment
+- **OpenAPI/Swagger** docs at `/api-docs`
+- **Code Quality**: ESLint, Prettier
+- **Hot Reload** dev environment
 
 ## 📁 Project Structure
 
-```
+```bash
 src/
-├── config/           # Database, JWT, and Swagger configuration
+├── config/           # DB, JWT, Swagger config
 ├── middlewares/      # Express middlewares (auth, validation, errors)
-├── models/          # Mongoose models
-├── routes/          # API route handlers
-├── schemas/         # Zod validation schemas
-├── shared/          # Constants and utilities
-│   ├── constants/   # Application constants (HTTP status, user roles)
-│   └── utils/       # Helper functions
-└── types/           # TypeScript type definitions
+├── models/           # Prisma models (see prisma/schema.prisma)
+├── routes/           # API route handlers
+├── schemas/          # Zod validation schemas
+├── shared/           # Constants and utilities
+│   ├── constants/    # HTTP status, user roles, etc.
+│   └── utils/        # Helper functions
+└── types/            # TypeScript type definitions
+prisma/
+└── schema.prisma     # Prisma schema
 ```
 
 ## 🛠️ Development
 
 ### Prerequisites
+
 - Node.js 20+
-- Docker/Podman for MongoDB
+- Docker or Podman (for PostgreSQL)
+- PostgreSQL (local or cloud, see `.env`)
 
 ### Setup
+
 ```bash
 # Install dependencies
 npm install
+
+# Generate Prisma client
+npx prisma generate
+
+# Run migrations (if needed)
+npx prisma migrate dev
 ```
-#### Using Docker
+
+#### Using Docker (PostgreSQL)
+
 ```bash
-# Start MongoDB container
 docker-compose up -d
 ```
 
-#### Using Podman
-```bash
-# Start MongoDB container
-sudo podman run -d --name cynoia-mongo -p 27017:27017 \
-  -e MONGO_INITDB_ROOT_USERNAME=admin \
-  -e MONGO_INITDB_ROOT_PASSWORD=password \
-  -e MONGO_INITDB_DATABASE=cynoia_db \
-  -v $(pwd)/mongo-init:/docker-entrypoint-initdb.d \
-  docker.io/library/mongo:7.0
+#### Using Podman (PostgreSQL)
 
-# Start development server
-npm run dev
+```bash
+sudo podman run -d --name cynoia-postgres -p 5432:5432 \
+  -e POSTGRES_USER=admin \
+  -e POSTGRES_PASSWORD=password \
+  -e POSTGRES_DB=cynoia_db \
+  docker.io/library/postgres:16
 ```
+
 #### Start development server
+
 ```bash
 npm run dev
 ```
 
 ### Available Scripts
+
 ```bash
-npm run dev          # Start development server with hot reload
+npm run dev          # Start dev server with hot reload
 npm run build        # Build for production
 npm run start        # Start production server
 npm run lint         # Lint code with ESLint
@@ -74,71 +85,75 @@ npm run lint:fix     # Fix linting issues
 npm run format       # Format code with Prettier
 npm run format:check # Check code formatting
 npm run type-check   # TypeScript type checking
+npm run test         # Run tests
 ```
 
 ## 🌐 API Endpoints
 
 - `GET /health` - Health check
-- `GET /api-docs` - Interactive Swagger documentation
-- `POST /api/v1/auth/register` - User registration (placeholder)
-- `POST /api/v1/auth/login` - User login (placeholder)
-- `GET /api/v1/users/profile` - Get user profile (placeholder)
+- `GET /api-docs` - Swagger docs
+- `POST /api/v1/auth/register` - User registration
+- `POST /api/v1/auth/login` - User login
+- `GET /api/v1/users/profile` - Get user profile (protected)
+- `CRUD /api/v1/entities` - Entity management (protected, role-based)
 
-## 🎯 TypeScript Best Practices Applied
+## 🎯 TypeScript Best Practices
 
-- **Strict type checking** with comprehensive TypeScript configuration
-- **Type inference** preferred over explicit typing where obvious
-- **Consistent type imports** using `import type`
+- **Strict type checking** (`tsconfig.json`)
+- **Type inference** preferred
+- **Consistent type imports** (`import type`)
 - **Nullish coalescing** (`??`) and optional chaining (`?.`)
-- **Immutable data** with `const` and `readonly` where appropriate
-- **Modern ES2022** features for better performance and readability
-- **No explicit any** types - everything properly typed
-- **Functional programming** principles where applicable
+- **Immutable data** (`const`, `readonly`)
+- **Modern ES2022** features
+- **No explicit any** types
+- **Functional programming** principles
 
 ## 🔧 Configuration
 
-### Environment Variables
+### Environment Variables (`.env`)
+
 ```env
 NODE_ENV=development
 PORT=3000
-MONGODB_URI=mongodb://cynoia_user:cynoia_password@localhost:27017/cynoia_db
+DATABASE_URL=postgresql://user:password@localhost:5432/cynoia_db
 JWT_SECRET=your-secret-key
 API_VERSION=v1
 CORS_ORIGIN=http://localhost:3000
 ```
 
-### Why ES2022?
-ES2022 provides the latest JavaScript features for optimal performance and developer experience while maintaining compatibility with Node.js 20+.
-
 ## 📦 Dependencies
 
 ### Production
-- express - Web framework
-- mongoose - MongoDB ODM
-- bcryptjs - Password hashing
-- jsonwebtoken - JWT implementation
-- zod - Runtime validation
-- helmet - Security headers
-- cors - CORS handling
-- morgan - Request logging
-- swagger-ui-express - API documentation
-- swagger-jsdoc - OpenAPI specification
+
+- express
+- prisma / @prisma/client
+- bcryptjs
+- jsonwebtoken
+- zod
+- helmet
+- cors
+- morgan
+- swagger-ui-express
+- swagger-jsdoc
 
 ### Development
-- typescript - Type checking
-- tsx - TypeScript runtime
-- eslint - Code linting
-- prettier - Code formatting
-- module-alias - Path alias resolution
-- @types/* - TypeScript definitions
+
+- typescript
+- tsx
+- eslint
+- prettier
+- module-alias
+- @types/*
 
 ## 🎨 Code Style
 
-- **No semicolons** (Prettier configuration)
+- **No semicolons** (Prettier)
 - **Single quotes** for strings
 - **2 spaces** indentation
 - **Trailing commas** for ES5 compatibility
 - **Arrow functions** with minimal parentheses
 - **Simple and clean** - no over-engineering
+
+---
 
 This project follows functional programming principles and keeps things simple without over-engineering.
