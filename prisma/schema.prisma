@@ -1,0 +1,134 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Entity {
+  id       Int      @id @default(autoincrement())
+  name     String
+  logo     String?
+  couleur  String?
+  avatar   String?
+  domaine  String?
+
+  users       User[]
+  roles       Role[]
+  espaces     Espace[]
+  equipements Equipement[]
+}
+
+model Role {
+  id        Int     @id @default(autoincrement())
+  name      String
+  code      String
+  status    Boolean @default(true)
+
+  entities  Entity? @relation(fields: [entitiesId], references: [id])
+  entitiesId Int?
+
+  users     User[]
+}
+
+model User {
+  id        Int     @id @default(autoincrement())
+  firstName String
+  lastName  String
+  email     String  @unique
+  login     String  @unique
+  password  String
+
+  role      Role?   @relation(fields: [roleId], references: [id])
+  roleId    Int?
+
+  entity    Entity? @relation(fields: [entitiesId], references: [id])
+  entitiesId Int?
+}
+
+
+model Espace {
+  id           Int     @id @default(autoincrement())
+  name         String
+  surface      Int?
+  status       Boolean @default(true)
+  validation   Boolean @default(false)
+
+  entity       Entity? @relation(fields: [entitiesId], references: [id])
+  entitiesId   Int?
+
+  type         TypeEspace? @relation(fields: [typeEspacesId], references: [id])
+  typeEspacesId Int?
+
+  reservations Reservation[]
+  equipements  EquipementsOnEspaces[]
+}
+
+model TypeEspace {
+  id        Int     @id @default(autoincrement())
+  name      String
+  code      String
+  status    Boolean @default(true)
+
+  espaces   Espace[]
+}
+
+
+model Equipement {
+  id       Int    @id @default(autoincrement())
+  name     String
+  imgCover String?
+
+  entity   Entity? @relation(fields: [entitiesId], references: [id])
+  entitiesId Int?
+
+  espaces EquipementsOnEspaces[]
+}
+
+model EquipementsOnEspaces {
+  equipementsId Int
+  espacesId     Int
+
+  equipement Equipement @relation(fields: [equipementsId], references: [id])
+  espace     Espace     @relation(fields: [espacesId], references: [id])
+
+  @@id([equipementsId, espacesId])
+}
+
+model Reservation {
+  id        Int       @id @default(autoincrement())
+  startAt   DateTime
+  endAt     DateTime
+  status    String
+
+  espace    Espace?   @relation(fields: [espacesId], references: [id])
+  espacesId Int?
+
+  transaction Transaction?
+}
+
+model Transaction {
+  id            Int         @id @default(autoincrement())
+
+  reservation   Reservation @relation(fields: [reservationsId], references: [id])
+  reservationsId Int @unique
+
+  paymentMode   PaymentMode @relation(fields: [paymentmodeId], references: [id])
+  paymentmodeId Int
+}
+
+model PaymentMode {
+  id          Int           @id @default(autoincrement())
+  name        String
+
+  transactions Transaction[]
+}
+

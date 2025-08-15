@@ -1,23 +1,25 @@
 import { z } from 'zod'
 
 export const registerSchema = z.object({
-  name: z.string().trim().min(2).max(50),
+  firstName: z.string().min(2),
+  lastName: z.string().min(2),
   email: z.string().email(),
+  login: z.string().min(3),
   password: z.string().min(6),
-  phone: z.string().trim().optional(),
-  department: z.string().trim().optional(),
-})
+  roleId: z.number(),
+  entityId: z.number().optional().transform(val => val ?? null),
+});
 
 export const loginSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(1),
-})
+  login: z.string(),
+  password: z.string(),
+});
 
 export const updateProfileSchema = z.object({
-  name: z.string().trim().min(2).max(50).optional(),
-  phone: z.string().trim().optional(),
-  department: z.string().trim().optional(),
-  avatar: z.string().url().optional(),
+  name: z.string().trim().min(2).max(50).optional().transform(val => val ?? null),
+  phone: z.string().trim().optional().transform(val => val ?? null),
+  department: z.string().trim().optional().transform(val => val ?? null),
+  avatar: z.string().url().optional().transform(val => val ?? null),
 })
 
 export const changePasswordSchema = z.object({

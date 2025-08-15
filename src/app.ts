@@ -11,6 +11,7 @@ import { setupSwagger } from '@/config/swagger'
 
 import authRoutes from '@/routes/auth'
 import userRoutes from '@/routes/users'
+import entityRoutes from '@/routes/entity'
 
 const app = express()
 
@@ -71,6 +72,7 @@ const apiVersion = process.env.API_VERSION ?? 'v1'
 
 app.use(`/api/${apiVersion}/auth`, authRoutes)
 app.use(`/api/${apiVersion}/users`, userRoutes)
+app.use(`/api/${apiVersion}/entities`, entityRoutes)
 
 app.use(notFound)
 app.use(errorHandler as unknown as express.ErrorRequestHandler)

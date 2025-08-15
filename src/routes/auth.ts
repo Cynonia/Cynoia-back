@@ -1,7 +1,6 @@
 import { Router } from 'express'
 import { login, register } from '@/controllers/auth.controller';
 
-
 const router = Router()
 
 /**
@@ -18,9 +17,13 @@ const router = Router()
  *           schema:
  *             type: object
  *             required:
+ *               - name
  *               - email
  *               - password
  *             properties:
+ *               name:
+ *                 type: string
+ *                 description: User's full name
  *               email:
  *                 type: string
  *                 format: email
@@ -29,6 +32,10 @@ const router = Router()
  *                 type: string
  *                 minLength: 6
  *                 description: User password
+ *               role:
+ *                 type: string
+ *                 enum: [USER, ADMIN]
+ *                 description: User role (optional)
  *     responses:
  *       201:
  *         description: User created successfully
@@ -37,22 +44,32 @@ const router = Router()
  *             schema:
  *               type: object
  *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
  *                 message:
  *                   type: string
  *                   example: User registered successfully
  *                 user:
  *                   $ref: '#/components/schemas/User'
+ *                 token:
+ *                   type: string
+ *                   description: JWT access token
  *       400:
- *         description: Bad request
+ *         description: Email already exists or bad request
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Email already exists
+ *       500:
+ *         description: Server error
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.post('/register',register)
+router.post('/register', register)
 
 /**
  * @swagger
@@ -86,24 +103,31 @@ router.post('/register',register)
  *             schema:
  *               type: object
  *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
  *                 message:
  *                   type: string
  *                   example: Login successful
+ *                 user:
+ *                   $ref: '#/components/schemas/User'
  *                 token:
  *                   type: string
  *                   description: JWT access token
- *                 user:
- *                   $ref: '#/components/schemas/User'
  *       401:
  *         description: Invalid credentials
  *         content:
  *           application/json:
  *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Invalid credentials
+ *       500:
+ *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.post('/login',login)
+router.post('/login', login)
 
 export default router
