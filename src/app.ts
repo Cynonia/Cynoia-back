@@ -2,8 +2,9 @@ import 'dotenv/config'
 import express from 'express'
 import cors from 'cors'
 import helmet from 'helmet'
-import morgan from 'morgan'
 import rateLimit from 'express-rate-limit'
+import { logger } from '@sonatel-os/juf-xpress-logger';
+
 
 import { errorHandler } from '@/middlewares/errorHandler'
 import { notFound } from '@/middlewares/notFound'
@@ -23,6 +24,16 @@ app.use(
   })
 )
 
+// Setting up the logger middleware
+
+logger.bootstrap({
+  appName: 'cynoia-spaces-backend',
+  crypt: ['password', 'authorization'],
+  logLevel: 'info',
+  startApmAgent: false // true si tu veux APM
+});
+
+
 const limiter = rateLimit({
   windowMs: Number(process.env.RATE_LIMIT_WINDOW_MS) ?? 15 * 60 * 1000,
   max: Number(process.env.RATE_LIMIT_MAX_REQUESTS) ?? 100,
@@ -32,9 +43,6 @@ const limiter = rateLimit({
 })
 app.use('/api', limiter)
 
-if (process.env.NODE_ENV !== 'production') {
-  app.use(morgan('dev'))
-}
 
 app.use(express.json({ limit: '10mb' }))
 app.use(express.urlencoded({ extended: true }))
@@ -73,6 +81,27 @@ const apiVersion = process.env.API_VERSION ?? 'v1'
 app.use(`/api/${apiVersion}/auth`, authRoutes)
 app.use(`/api/${apiVersion}/users`, userRoutes)
 app.use(`/api/${apiVersion}/entities`, entityRoutes)
+
+app.get('/test-logger', (_req, res) => {
+  logger.writeLog({
+    params: {
+      logFrom: '192.168.1.1',
+      userIp: '10.0.0.1',
+      method: 'GET',
+      payload: {},
+      headers: { 'user-agent': 'Mozilla/5.0' },
+      logTarget: '/test-logger',
+      userAgent: 'Mozilla/5.0',
+      logStatus: 200,
+      logStatusCode: 'OK'
+    },
+    userName: 'test_user',
+    logLevel: 'INFO',
+    action: 'Test logger',
+    duration: 100
+  });
+  res.send('Logger tested successfully!');
+});
 
 app.use(notFound)
 app.use(errorHandler as unknown as express.ErrorRequestHandler)
