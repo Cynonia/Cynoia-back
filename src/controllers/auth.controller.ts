@@ -19,6 +19,6 @@ export const login = async (req: Request, res: Response) => {
     const result = await AuthService.login(dto)
     return sendSuccess(res, result, 'Login successful')
   } catch (error: any) {
-    return sendError(res, error.message, null, 401)
+    return sendError(res, "invalid email or password", null, 401)
   }
 }

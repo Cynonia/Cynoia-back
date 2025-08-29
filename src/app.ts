@@ -5,8 +5,8 @@ import helmet from 'helmet'
 import rateLimit from 'express-rate-limit'
 import { logger } from '@sonatel-os/juf-xpress-logger';
 
-
-import { errorHandler } from '@/middlewares/errorHandler'
+import { errorHandlerMiddleware } from '@/middlewares/errors.middleware';
+import { logRequestMiddleware } from '@/middlewares/logger.middleware';
 import { notFound } from '@/middlewares/notFound'
 import { setupSwagger } from '@/config/swagger'
 
@@ -19,7 +19,7 @@ const app = express()
 app.use(helmet())
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN ?? 'http://localhost:3000',
+    origin: process.env.CORS_ORIGIN ?? 'http://localhost:4200',
     credentials: true,
   })
 )
@@ -30,8 +30,12 @@ logger.bootstrap({
   appName: 'cynoia-spaces-backend',
   crypt: ['password', 'authorization'],
   logLevel: 'info',
-  startApmAgent: false // true si tu veux APM
+  startApmAgent: false,
+  logDir: ""
 });
+
+app.use(logRequestMiddleware);
+
 
 
 const limiter = rateLimit({
@@ -82,28 +86,11 @@ app.use(`/api/${apiVersion}/auth`, authRoutes)
 app.use(`/api/${apiVersion}/users`, userRoutes)
 app.use(`/api/${apiVersion}/entities`, entityRoutes)
 
-app.get('/test-logger', (_req, res) => {
-  logger.writeLog({
-    params: {
-      logFrom: '192.168.1.1',
-      userIp: '10.0.0.1',
-      method: 'GET',
-      payload: {},
-      headers: { 'user-agent': 'Mozilla/5.0' },
-      logTarget: '/test-logger',
-      userAgent: 'Mozilla/5.0',
-      logStatus: 200,
-      logStatusCode: 'OK'
-    },
-    userName: 'test_user',
-    logLevel: 'INFO',
-    action: 'Test logger',
-    duration: 100
-  });
-  res.send('Logger tested successfully!');
-});
+
+
+app.use(errorHandlerMiddleware);
+
 
 app.use(notFound)
-app.use(errorHandler as unknown as express.ErrorRequestHandler)
 
 export default app
