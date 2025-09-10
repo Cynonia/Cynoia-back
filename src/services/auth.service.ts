@@ -30,7 +30,7 @@ export class AuthService {
       email: dto.email,
       login: dto.login,
       password: hashedPassword,
-      role: { connect: { id: dto.roleId } },
+      role: { connect: { id: 2 } },
       ...(dto.entityId ? { entity: { connect: { id: dto.entityId } } } : {}),
     };
 
@@ -64,7 +64,7 @@ export class AuthService {
 
   static async login(dto: LoginDTO) {
     const user = await prisma.user.findUnique({
-      where: { login: dto.login },
+      where: { email: dto.email },
       include: { role: true },
     })
 

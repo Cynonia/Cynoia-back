@@ -6,12 +6,12 @@ export const registerSchema = z.object({
   email: z.string().email(),
   login: z.string().min(3),
   password: z.string().min(6),
-  roleId: z.number(),
+  roleId: z.number().optional().transform(val => val ?? 2),
   entityId: z.number().optional().transform(val => val ?? null),
 });
 
 export const loginSchema = z.object({
-  login: z.string(),
+  email: z.string().email(),
   password: z.string(),
 });
 
