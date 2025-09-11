@@ -1,24 +1,25 @@
-module.exports = {
+// .eslintrc.js (ESM)
+export default {
   parser: '@typescript-eslint/parser',
   plugins: ['@typescript-eslint'],
   extends: ['eslint:recommended'],
   parserOptions: {
     ecmaVersion: 'latest',
-    sourceType: 'module'
+    sourceType: 'module',
   },
   rules: {
     'no-unused-vars': 'off',
-    '@typescript-eslint/no-unused-vars': ['error', { 
+    '@typescript-eslint/no-unused-vars': ['error', {
       argsIgnorePattern: '^_',
-      varsIgnorePattern: '^_' 
+      varsIgnorePattern: '^_',
     }],
     'prefer-const': 'error',
     'no-var': 'error',
     'object-shorthand': 'error',
-    'prefer-template': 'error'
+    'prefer-template': 'error',
   },
   env: {
     node: true,
-    es2022: true
-  }
+    es2022: true,
+  },
 }
