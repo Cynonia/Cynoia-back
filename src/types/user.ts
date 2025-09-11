@@ -23,3 +23,13 @@ export interface LoginCredentials {
 }
 
 export type UserRole = keyof typeof USER_ROLES
+
+export interface JwtPayload {
+  id: number;
+  login: string;
+  email: string;
+  role: string;
+  roleId: number;
+  iat?: number;
+  exp?: number;
+}

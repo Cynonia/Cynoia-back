@@ -1,16 +1,16 @@
 import { Request, Response, NextFunction } from 'express';
 import { logger } from '@sonatel-os/juf-xpress-logger';
-import { HttpErrorPlus } from 'http-errors-plus';
+import { HttpError } from 'http-errors-plus';
 
 export const errorHandlerMiddleware = (
   err: any,
   req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ) => {
   // Si c'est une erreur http-errors-plus
-  const statusCode = (err as HttpErrorPlus).status || 500;
-  const message = (err as HttpErrorPlus).message || 'Internal Server Error';
+  const statusCode = (err as HttpError).meta.status || 500;
+  const message = (err as HttpError).message || 'Internal Server Error';
 
   // Logger l'erreur
   logger.writeLog({

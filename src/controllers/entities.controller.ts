@@ -20,7 +20,7 @@ export const createEntity = async (req: Request, res: Response) => {
   }
 }
 
-export const getAllEntities = async (req: Request, res: Response) => {
+export const getAllEntities = async (_: unknown, res: Response) => {
   try {
     const entities = await EntityService.getAll()
     return sendSuccess(res, entities, 'Entities fetched successfully')

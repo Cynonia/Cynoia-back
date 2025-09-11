@@ -1,5 +1,4 @@
-import jwt from 'jsonwebtoken'
-import type { JWTPayload } from '@/types'
+import jwt, { JwtPayload } from 'jsonwebtoken'
 
 const getJwtSecret = (): string => {
   const secret = process.env.JWT_SECRET
@@ -16,13 +15,13 @@ export const jwtConfig = {
   secret,
   expiresIn,
 
-  generateToken: (payload: Pick<JWTPayload, 'id'>): string => {
+  generateToken: (payload: Pick<JwtPayload, 'id'>): string => {
     return jwt.sign(payload, secret, { expiresIn })
   },
 
-  verifyToken: (token: string): JWTPayload => {
+  verifyToken: (token: string): JwtPayload => {
     try {
-      return jwt.verify(token, secret) as JWTPayload
+      return jwt.verify(token, secret) as JwtPayload
     } catch (error) {
       throw new Error('Invalid token')
     }
