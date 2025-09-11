@@ -39,8 +39,8 @@ app.use(logRequestMiddleware);
 
 
 const limiter = rateLimit({
-  windowMs: Number(process.env.RATE_LIMIT_WINDOW_MS) ?? 15 * 60 * 1000,
-  max: Number(process.env.RATE_LIMIT_MAX_REQUESTS) ?? 100,
+  windowMs:  15 * 60 * 1000,
+  max:  100,
   message: {
     error: 'Too many requests from this IP, please try again later.',
   },
@@ -73,7 +73,7 @@ if (process.env.NODE_ENV !== 'production') {
  */
 // Health check endpoint
 app.get('/health', (_req: unknown, res: unknown) => {
-  ;(res as { status: (code: number) => { json: (data: unknown) => void } }).status(200).json({
+  (res as { status: (code: number) => { json: (data: unknown) => void } }).status(200).json({
     status: 'OK',
     timestamp: new Date().toISOString(),
     uptime: process.uptime()
