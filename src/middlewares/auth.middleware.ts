@@ -12,6 +12,7 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
     const decoded = jwt.verify(token, JWT_SECRET) as JwtPayloadCustom;
     req.user = decoded;
     next();
+    return;
   } catch {
     return res.status(401).json({ message: "Invalid token" });
   }
