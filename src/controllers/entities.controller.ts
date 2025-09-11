@@ -9,7 +9,7 @@ export const createEntity = async (req: Request, res: Response) => {
   try {
     const user = req.user
 
-    if (!authorizeRole(user, ['Admin', 'Manager'], res)) return
+    if (!authorizeRole(user, ['ADMIN', 'MANAGER'], res)) return
 
     const data = createEntitySchema.parse(req.body)
     const entity = await EntityService.create(data)
