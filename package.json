@@ -4,7 +4,6 @@
   "description": "Backend API for Cynoia - user management system",
   "main": "dist/server.js",
   "type": "module",
-
   "scripts": {
     "build": "tsc",
     "start": "node dist/server.js",
