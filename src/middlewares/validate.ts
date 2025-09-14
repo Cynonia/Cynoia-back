@@ -1,6 +1,6 @@
 import { NextFunction } from 'express'
 import { z, ZodSchema } from 'zod'
-import { HTTP_STATUS } from '@/shared/constants'
+import { HTTP_STATUS } from './../shared/constants/index.js'
 
 interface ValidatedRequest {
   body: unknown

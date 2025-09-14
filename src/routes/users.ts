@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { HTTP_STATUS } from '@/shared/constants'
+import { HTTP_STATUS } from './../shared/constants/index.js'
 
 interface RouteResponse {
   status: (code: number) => RouteResponse

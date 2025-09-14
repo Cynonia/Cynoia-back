@@ -1,5 +1,5 @@
 import { Response } from "express";
-import { sendError } from "./responseFormatter";
+import { sendError } from "./responseFormatter.js";
 
 export const authorizeRole = (user: any, roles: string[], res: Response) => {
   if (!roles.includes(user.role)) {

@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from 'express'
-import { HTTP_STATUS } from '@/shared/constants'
+import { HTTP_STATUS } from './../shared/constants/index.js'
 
 interface CustomError extends Error {
   readonly statusCode?: number

@@ -1,9 +1,9 @@
 // src/controllers/entity.controller.ts
 import { Request, Response } from 'express'
-import { EntityService } from '@/services/entity.service'
-import { sendSuccess, sendError } from '@/utils/responseFormatter'
-import { createEntitySchema, updateEntitySchema } from '@/schemas/entity.schema'
-import { authorizeRole } from '@/utils/authorization'
+import { EntityService } from './../services/entity.service.js'
+import { sendSuccess, sendError } from './../utils/responseFormatter.js'
+import { createEntitySchema, updateEntitySchema } from './../schemas/entity.schema.js'
+import { authorizeRole } from './../utils/authorization.js'
 
 export const createEntity = async (req: Request, res: Response) => {
   try {

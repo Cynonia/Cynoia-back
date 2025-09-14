@@ -1,4 +1,4 @@
-import type { USER_ROLES } from '@/shared/constants'
+import type { USER_ROLES } from './../shared/constants/index.js'
 
 export interface User {
   readonly _id: string

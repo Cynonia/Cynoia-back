@@ -1,8 +1,8 @@
-import { prisma } from '@/config/prisma'
+import { prisma } from './../config/prisma.js'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
-import { JWT_SECRET, JWT_EXPIRES_IN } from '@/shared/constants'
-import { LoginDTO, RegisterDTO } from '@/dtos/auth.dtos'
+import { JWT_SECRET, JWT_EXPIRES_IN } from './../shared/constants/index.js'
+import { LoginDTO, RegisterDTO } from './../dtos/auth.dtos.js'
 
 interface JwtPayload {
   id: number

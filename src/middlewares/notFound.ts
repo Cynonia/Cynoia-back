@@ -1,4 +1,4 @@
-import { HTTP_STATUS } from '@/shared/constants'
+import { HTTP_STATUS } from './../shared/constants/index.js'
 
 interface NotFoundRequest {
   originalUrl: string

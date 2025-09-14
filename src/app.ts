@@ -5,14 +5,14 @@ import helmet from 'helmet'
 import rateLimit from 'express-rate-limit'
 import { logger } from '@sonatel-os/juf-xpress-logger-edge';
 
-import { errorHandlerMiddleware } from '@/middlewares/errors.middleware';
-import { logRequestMiddleware } from '@/middlewares/logger.middleware';
-import { notFound } from '@/middlewares/notFound'
-import { setupSwagger } from '@/config/swagger'
+import { errorHandlerMiddleware } from './middlewares/errors.middleware.js';
+import { logRequestMiddleware } from './middlewares/logger.middleware.js';
+import { notFound } from './middlewares/notFound.js'
+import { setupSwagger } from './config/swagger.js'
 
-import authRoutes from '@/routes/auth'
-import userRoutes from '@/routes/users'
-import entityRoutes from '@/routes/entity'
+import authRoutes from './routes/auth.js'
+import userRoutes from './routes/users.js'
+import entityRoutes from './routes/entity.js'
 
 const app = express()
 

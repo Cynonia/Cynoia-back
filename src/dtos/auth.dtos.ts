@@ -1,4 +1,4 @@
-import { loginSchema, registerSchema } from "@/schemas";
+import { loginSchema, registerSchema } from "./../schemas/auth.js";
 import z from "zod";
 
 export type RegisterDTO = z.infer<typeof registerSchema>;

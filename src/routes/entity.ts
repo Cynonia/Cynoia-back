@@ -6,8 +6,8 @@ import {
   getEntityById,
   updateEntity,
   deleteEntity,
-} from "@/controllers/entities.controller";
-import { authMiddleware } from "@/middlewares/auth.middleware";
+} from "./../controllers/entities.controller.js";
+import { authMiddleware } from "./../middlewares/auth.middleware.js";
 
 const router = Router();
 

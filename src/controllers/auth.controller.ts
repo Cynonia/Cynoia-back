@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
-import { AuthService } from '@/services/auth.service'
-import { sendSuccess, sendError } from '@/utils/responseFormatter'
-import { loginSchema, registerSchema } from '@/schemas'
+import { AuthService } from './../services/auth.service.js'
+import { sendSuccess, sendError } from './../utils/responseFormatter.js'
+import { loginSchema, registerSchema } from './../schemas/auth.js'
 
 export const register = async (req: Request, res: Response) => {
   try {

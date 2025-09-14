@@ -1,4 +1,4 @@
-import { createEntitySchema, updateEntitySchema } from "@/schemas/entity.schema";
+import { createEntitySchema, updateEntitySchema } from "./../schemas/entity.schema.js";
 import z from "zod";
 
 export type CreateEntityDTO = z.infer<typeof createEntitySchema>;
