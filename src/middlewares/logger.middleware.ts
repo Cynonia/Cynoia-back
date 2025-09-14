@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { logger } from '@sonatel-os/juf-xpress-logger';
+import { logger } from '@sonatel-os/juf-xpress-logger-edge';
 
 // Middleware pour logger chaque requête HTTP
 export const logRequestMiddleware = (req: Request, res: Response, next: NextFunction) => {

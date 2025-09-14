@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { logger } from '@sonatel-os/juf-xpress-logger';
+import { logger } from '@sonatel-os/juf-xpress-logger-edge';
 import { HttpError } from 'http-errors-plus';
 
 export const errorHandlerMiddleware = (

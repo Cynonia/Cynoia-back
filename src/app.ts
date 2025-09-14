@@ -3,7 +3,7 @@ import express from 'express'
 import cors from 'cors'
 import helmet from 'helmet'
 import rateLimit from 'express-rate-limit'
-import { logger } from '@sonatel-os/juf-xpress-logger';
+import { logger } from '@sonatel-os/juf-xpress-logger-edge';
 
 import { errorHandlerMiddleware } from '@/middlewares/errors.middleware';
 import { logRequestMiddleware } from '@/middlewares/logger.middleware';
@@ -27,11 +27,11 @@ app.use(
 // Setting up the logger middleware
 
 logger.bootstrap({
-  appName: 'cynoia-spaces-backend',
+  // appName: 'cynoia-spaces-backend',
   crypt: ['password', 'authorization'],
   logLevel: 'info',
   startApmAgent: false,
-  logDir: ""
+  // logDir: ""
 });
 
 app.use(logRequestMiddleware);
