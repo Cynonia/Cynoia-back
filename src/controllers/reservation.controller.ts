@@ -21,6 +21,17 @@ export const getReservationById = async (req: Request, res: Response) => {
   }
 }
 
+export const getReservationByEntityId = async (req: Request, res: Response) => {
+  try {
+    const data = await ReservationService.getByEntityId(Number(req.params.id))
+    return sendSuccess(res, data, "Reservation fetched successfully")
+  } catch (err: any) {
+    return sendError(res, err.message, null, 404)
+  }
+}
+
+
+
 export const createReservation = async (req: Request, res: Response) => {
   try {
     const body = createReservationSchema.parse(req.body)

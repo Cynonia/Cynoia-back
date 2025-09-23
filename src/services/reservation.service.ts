@@ -9,6 +9,21 @@ export class ReservationService {
     return prisma.reservation.findUnique({ where: { id }, include: { espace: true, transaction: true } })
   }
 
+  static async getByEntityId(id: number){
+    return prisma.reservation.findMany({where: {
+        espace: {
+          entitiesId: id
+        }
+    },include:{
+      espace: true,
+      transaction: {
+        include: {
+          paymentMode: true
+        }
+      }
+    }})
+  }
+
   static async create(data: any) {
     return prisma.reservation.create({ data, include: { espace: true } })
   }
