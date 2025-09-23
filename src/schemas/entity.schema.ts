@@ -6,6 +6,7 @@ export const createEntitySchema = z.object({
   couleur: z.string().optional().transform(val => val ?? null),
   avatar: z.string().optional().transform(val => val ?? null),
   domaine: z.string().optional().transform(val => val ?? null),
+  userId: z.number()
 });
 
 export const updateEntitySchema = createEntitySchema.partial();

@@ -1,11 +1,23 @@
 // src/services/entity.service.ts
 import { prisma } from './../config/prisma.js'
 import { CreateEntityDTO, UpdateEntityDTO } from './../dtos/entity.dtos.js'
-import { cleanUndefined,WrapUpdateField } from './../utils/zodPrismaNormalizer.js'
+import {
+  cleanUndefined,
+  WrapUpdateField,
+} from './../utils/zodPrismaNormalizer.js'
 
 export class EntityService {
   static async create(data: CreateEntityDTO) {
-    return prisma.entity.create({ data })
+    const { userId, ...entityData } = data
+
+    return prisma.entity.create({
+      data: {
+        ...entityData,
+        users: {
+          connect: { id: userId },
+        },
+      },
+    })
   }
 
   static async getAll() {

@@ -65,7 +65,7 @@ export class AuthService {
   static async login(dto: LoginDTO) {
     const user = await prisma.user.findUnique({
       where: { email: dto.email },
-      include: { role: true },
+      include: { role: true,entity: true },
     })
 
     if (!user) throw new Error('Invalid credentials')
@@ -91,6 +91,7 @@ export class AuthService {
         login: user.login,
         email: user.email,
         role: user.role?.name ?? null,
+        entity: user.entity ?? null
       },
       token,
     }
