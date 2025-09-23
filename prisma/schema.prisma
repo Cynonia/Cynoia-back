@@ -13,6 +13,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum ReservationStatus {
+  EN_ATTENTE
+  CONFIRMEE
+  REJETEE
+  ANNULEE
+}
+
 model Entity {
   id       Int      @id @default(autoincrement())
   name     String
@@ -52,6 +59,8 @@ model User {
 
   entity    Entity? @relation(fields: [entitiesId], references: [id])
   entitiesId Int?
+
+  reservations Reservation[]
 }
 
 
@@ -59,8 +68,13 @@ model Espace {
   id           Int     @id @default(autoincrement())
   name         String
   surface      Int?
+  description  String?
+  capacity     Int?
   status       Boolean @default(true)
   validation   Boolean @default(false)
+  pricePerHour Float? 
+  images       String[]
+  location     String?
 
   entity       Entity? @relation(fields: [entitiesId], references: [id])
   entitiesId   Int?
@@ -111,6 +125,9 @@ model Reservation {
 
   espace    Espace?   @relation(fields: [espacesId], references: [id])
   espacesId Int?
+
+  user       User               @relation(fields: [userId], references: [id])
+  userId     Int @default(1)
 
   transaction Transaction?
 }

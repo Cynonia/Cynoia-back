@@ -16,6 +16,7 @@ export class ReservationService {
         }
     },include:{
       espace: true,
+      user: true,
       transaction: {
         include: {
           paymentMode: true
