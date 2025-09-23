@@ -23,6 +23,11 @@ export const getEspaceById = async (req: Request, res: Response) => {
 
 export const createEspace = async (req: Request, res: Response) => {
   try {
+    const user = req.user
+    if (!user || !user.role || !["admin", "manager"].includes(user.role.toLocaleLowerCase())) {
+      return sendError(res, "Unauthorized: Only admin or manager can create an espace", null, 403)
+    }
+
     const data = createEspaceSchema.parse(req.body)
     const espace = await EspaceService.create(data)
     return sendSuccess(res, espace, "Espace created successfully", 201)
@@ -30,6 +35,7 @@ export const createEspace = async (req: Request, res: Response) => {
     return sendError(res, err.message, null, 400)
   }
 }
+
 
 export const updateEspace = async (req: Request, res: Response) => {
   try {
