@@ -118,10 +118,11 @@ model EquipementsOnEspaces {
 }
 
 model Reservation {
-  id        Int       @id @default(autoincrement())
-  startAt   DateTime
-  endAt     DateTime
-  status    String
+  id              Int       @id @default(autoincrement())
+  reservationDate DateTime  @db.Date
+  startTime       DateTime  @db.Time
+  endTime         DateTime  @db.Time
+  status          String
 
   espace    Espace?   @relation(fields: [espacesId], references: [id])
   espacesId Int?
