@@ -100,11 +100,14 @@ model Equipement {
   id       Int    @id @default(autoincrement())
   name     String
   imgCover String?
+  price    Float?  @default(0)
+  state    String? @default("AVAILABLE")
 
   entity   Entity? @relation(fields: [entitiesId], references: [id])
   entitiesId Int?
 
   espaces EquipementsOnEspaces[]
+  reservationEquipements ReservationEquipement[]
 }
 
 model EquipementsOnEspaces {
@@ -124,6 +127,8 @@ model Reservation {
   endTime         DateTime  @db.Time
   status          String
 
+  reservationEquipements ReservationEquipement[]
+
   espace    Espace?   @relation(fields: [espacesId], references: [id])
   espacesId Int?
 
@@ -131,6 +136,20 @@ model Reservation {
   userId     Int @default(1)
 
   transaction Transaction?
+}
+
+model ReservationEquipement {
+  reservationId Int
+  equipementId  Int
+
+  reservation Reservation @relation(fields: [reservationId], references: [id])
+  equipement  Equipement  @relation(fields: [equipementId], references: [id])
+
+  quantity Int     @default(1)
+  price    Float?  
+  state    String? 
+
+  @@id([reservationId, equipementId])
 }
 
 model Transaction {
