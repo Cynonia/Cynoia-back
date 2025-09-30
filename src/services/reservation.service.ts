@@ -40,7 +40,23 @@ export class ReservationService {
       status: data.status,
       ...(data.espacesId && { espacesId: data.espacesId }),
     }
-    return prisma.reservation.create({ data: processedData, include: { espace: true } })
+    // Create reservation
+    const reservation = await prisma.reservation.create({ data: processedData })
+
+    // If equipements provided, create join records
+    if (data.equipements && data.equipements.length > 0) {
+      const toCreate = data.equipements.map((eq: any) => ({
+        reservationId: reservation.id,
+        equipementId: eq.equipementId,
+        quantity: eq.quantity ?? 1,
+        price: eq.price ?? undefined,
+        state: eq.state ?? undefined,
+      }))
+
+      await prisma.reservationEquipement.createMany({ data: toCreate })
+    }
+
+    return prisma.reservation.findUnique({ where: { id: reservation.id }, include: { espace: true, reservationEquipements: { include: { equipement: true } } } })
   }
 
   /**
@@ -73,6 +89,18 @@ export class ReservationService {
   }
 
   static async delete(id: number) {
+    // remove related reservationEquipements first
+    await prisma.reservationEquipement.deleteMany({ where: { reservationId: id } })
     return prisma.reservation.delete({ where: { id } })
+  }
+
+  static async validateReservation(id: number) {
+    // set status to CONFIRMEE
+    return prisma.reservation.update({ where: { id }, data: { status: 'CONFIRMEE' } })
+  }
+
+  static async refuseReservation(id: number) {
+    // set status to REJETEE
+    return prisma.reservation.update({ where: { id }, data: { status: 'REJETEE' } })
   }
 }

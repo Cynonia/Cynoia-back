@@ -1,6 +1,7 @@
 import { Request, Response } from "express"
 import { ReservationService } from "../services/reservation.service.js"
 import { sendSuccess, sendError } from "../utils/responseFormatter.js"
+import { authorizeRole } from "../utils/authorization.js"
 import { createReservationSchema, updateReservationSchema } from "../schemas/reservation.js"
 
 export const getAllReservations = async (_: unknown, res: Response) => {
@@ -56,6 +57,30 @@ export const deleteReservation = async (req: Request, res: Response) => {
   try {
     await ReservationService.delete(Number(req.params.id))
     return sendSuccess(res, null, "Reservation deleted successfully")
+  } catch (err: any) {
+    return sendError(res, err.message, null, 400)
+  }
+}
+
+export const validateReservation = async (req: Request, res: Response) => {
+  try {
+    const user = req.user
+    if (!authorizeRole(user, ['ADMIN', 'MANAGER'], res)) return
+
+    const data = await ReservationService.validateReservation(Number(req.params.id))
+    return sendSuccess(res, data, "Reservation validated successfully")
+  } catch (err: any) {
+    return sendError(res, err.message, null, 400)
+  }
+}
+
+export const refuseReservation = async (req: Request, res: Response) => {
+  try {
+    const user = req.user
+    if (!authorizeRole(user, ['ADMIN', 'MANAGER'], res)) return
+
+    const data = await ReservationService.refuseReservation(Number(req.params.id))
+    return sendSuccess(res, data, "Reservation refused successfully")
   } catch (err: any) {
     return sendError(res, err.message, null, 400)
   }
