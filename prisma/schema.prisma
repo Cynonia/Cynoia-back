@@ -13,6 +13,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum ConversationType {
+  PRIVATE
+  GROUP
+}
+
 enum ReservationStatus {
   EN_ATTENTE
   CONFIRMEE
@@ -32,6 +37,8 @@ model Entity {
   roles       Role[]
   espaces     Espace[]
   equipements Equipement[]
+  conversations Conversation[]
+  invitations Invitation[]
 }
 
 model Role {
@@ -61,6 +68,11 @@ model User {
   entitiesId Int?
 
   reservations Reservation[]
+
+  // Chat relations
+  conversations ConversationParticipant[]
+  sentMessages Message[] @relation("UserMessages")
+  createdConversations Conversation[] @relation("ConversationCreator")
 }
 
 
@@ -167,5 +179,58 @@ model PaymentMode {
   name        String
 
   transactions Transaction[]
+}
+
+model Conversation {
+  id           Int               @id @default(autoincrement())
+  type         ConversationType
+  name         String?
+
+  entity       Entity            @relation(fields: [entitiesId], references: [id])
+  entitiesId   Int
+
+  createdBy    User              @relation("ConversationCreator", fields: [createdById], references: [id])
+  createdById  Int
+
+  participants ConversationParticipant[]
+  messages     Message[]
+
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+}
+
+model ConversationParticipant {
+  user           User         @relation(fields: [userId], references: [id])
+  userId         Int
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  conversationId Int
+  role           String?
+  joinedAt       DateTime     @default(now())
+  lastReadAt     DateTime?
+
+  @@id([userId, conversationId])
+}
+
+model Message {
+  id             Int          @id @default(autoincrement())
+  conversation   Conversation @relation(fields: [conversationId], references: [id])
+  conversationId Int
+  sender         User         @relation("UserMessages", fields: [senderId], references: [id])
+  senderId       Int
+  content        String
+  kind           String       @default("TEXT")
+  createdAt      DateTime     @default(now())
+}
+
+model Invitation {
+  id          Int       @id @default(autoincrement())
+  email       String
+  token       String
+  entitiesId  Int
+  entity      Entity    @relation(fields: [entitiesId], references: [id])
+  expiresAt   DateTime?
+  createdAt   DateTime  @default(now())
+
+  @@unique([email, entitiesId], name: "email_entitiesId")
 }
 

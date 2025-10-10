@@ -49,3 +49,12 @@ export const deleteTransaction = async (req: Request, res: Response) => {
     return sendError(res, err.message, null, 400)
   }
 }
+
+export const getTransactionsByEntityId = async (req: Request, res: Response) => {
+  try {
+    const data = await TransactionService.findByEntityId(Number(req.params.entityId))
+    return sendSuccess(res, data, "Transactions fetched successfully")
+  } catch (err: any) {
+    return sendError(res, err.message)
+  }
+}

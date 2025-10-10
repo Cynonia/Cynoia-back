@@ -20,4 +20,11 @@ export class TransactionService {
   static async delete(id: number) {
     return prisma.transaction.delete({ where: { id } })
   }
+
+  static async findByEntityId(entityId: number) {
+    return prisma.transaction.findMany({
+      where: { reservation: { espace: { entitiesId: entityId } } },
+      include: { reservation: true, paymentMode: true },
+    })
+  }
 }

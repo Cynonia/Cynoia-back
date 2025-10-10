@@ -21,6 +21,15 @@ export const getEspaceById = async (req: Request, res: Response) => {
   }
 }
 
+export const getEspacesByEntityId = async (req: Request, res: Response) => {
+  try {
+    const espaces = await EspaceService.findByEntityId(Number(req.params.entityId))
+    return sendSuccess(res, espaces, "Espaces fetched successfully")
+  } catch (err: any) {
+    return sendError(res, err.message)
+  }
+}
+
 export const createEspace = async (req: Request, res: Response) => {
   try {
     const user = req.user

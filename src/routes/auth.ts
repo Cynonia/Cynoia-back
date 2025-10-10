@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { login, register } from './../controllers/auth.controller.js';
+import { login, register, loginToEntity, registerToEntity } from './../controllers/auth.controller.js';
 
 const router = Router()
 
@@ -129,5 +129,73 @@ router.post('/register', register)
  *               $ref: '#/components/schemas/Error'
  */
 router.post('/login', login)
+
+// Entity-specific
+/**
+ * @swagger
+ * /api/v1/auth/entity/register:
+ *   post:
+ *     tags: [Authentication]
+ *     summary: Register a client user into an entity using invitation token
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [firstName, lastName, email, login, password, entityId, token]
+ *             properties:
+ *               firstName:
+ *                 type: string
+ *               lastName:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *                 format: email
+ *               login:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               entityId:
+ *                 type: integer
+ *               token:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Registered successfully
+ *       400:
+ *         description: Bad request/invalid or expired token
+ */
+router.post('/entity/register', registerToEntity)
+/**
+ * @swagger
+ * /api/v1/auth/entity/login:
+ *   post:
+ *     tags: [Authentication]
+ *     summary: Login a user against a specific entity
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [email, password, entityId]
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *               password:
+ *                 type: string
+ *               entityId:
+ *                 type: integer
+ *     responses:
+ *       200:
+ *         description: Login successful
+ *       401:
+ *         description: Invalid credentials
+ *       403:
+ *         description: User does not belong to this entity
+ */
+router.post('/entity/login', loginToEntity)
 
 export default router

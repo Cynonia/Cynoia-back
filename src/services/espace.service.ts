@@ -20,4 +20,8 @@ export class EspaceService {
   static async delete(id: number) {
     return prisma.espace.delete({ where: { id } })
   }
+
+  static async findByEntityId(entityId: number) {
+    return prisma.espace.findMany({ where: { entitiesId: entityId }, include: { entity: true, type: true, reservations: true, equipements: true } })
+  }
 }

@@ -19,6 +19,8 @@ import equipementRoutes from './routes/equipement.js'
 import reservationRoutes from './routes/reservation.js'
 import transactionRoutes from './routes/transaction.js'
 import paymentModeRoutes from './routes/paymentmode.js'
+import chatRoutes from './routes/chat.js'
+import invitationRoutes from './routes/invitation.js'
 
 const app = express()
 
@@ -98,6 +100,8 @@ app.use(`/api/${apiVersion}/equipements`, equipementRoutes)
 app.use(`/api/${apiVersion}/reservations`, reservationRoutes)
 app.use(`/api/${apiVersion}/transactions`, transactionRoutes)
 app.use(`/api/${apiVersion}/paymentmodes`, paymentModeRoutes)
+app.use(`/api/${apiVersion}/chats`, chatRoutes)
+app.use(`/api/${apiVersion}/invitations`, invitationRoutes)
 
 app.use(errorHandlerMiddleware)
 app.use(notFound)
