@@ -1,6 +1,6 @@
 
 import { Router } from "express"
-import { getAllEquipements, getEquipementById, createEquipement, updateEquipement, deleteEquipement } from "../controllers/equipement.controller.js"
+import { getAllEquipements, getEquipementById, createEquipement, updateEquipement, deleteEquipement, getEquipementsByEntityId } from "../controllers/equipement.controller.js"
 import { authMiddleware } from "../middlewares/auth.middleware.js"
 
 const router = Router()
@@ -27,6 +27,25 @@ router.use(authMiddleware)
  *         description: List of equipements
  */
 router.get("/", getAllEquipements)
+/**
+ * @swagger
+ * /api/v1/equipements/entity/{entityId}:
+ *   get:
+ *     tags: [Equipements]
+ *     summary: Get equipements by entity id
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: entityId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: List of equipements
+ */
+router.get("/entity/:entityId", getEquipementsByEntityId)
 
 /**
  * @swagger

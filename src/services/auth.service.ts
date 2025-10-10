@@ -30,7 +30,7 @@ export class AuthService {
       email: dto.email,
       login: dto.login,
       password: hashedPassword,
-      role: { connect: { id: 2 } },
+      role: { connect: { id: dto.roleId ?? 2 } },
       ...(dto.entityId ? { entity: { connect: { id: dto.entityId } } } : {}),
     };
 

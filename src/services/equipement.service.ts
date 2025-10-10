@@ -20,4 +20,8 @@ export class EquipementService {
   static async delete(id: number) {
     return prisma.equipement.delete({ where: { id } })
   }
+
+  static async findByEntityId(entityId: number) {
+    return prisma.equipement.findMany({ where: { entitiesId: entityId }, include: { entity: true, espaces: true } })
+  }
 }

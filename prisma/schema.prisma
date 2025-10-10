@@ -37,8 +37,8 @@ model Entity {
   roles       Role[]
   espaces     Espace[]
   equipements Equipement[]
-  // Chat back-relations
   conversations Conversation[]
+  invitations Invitation[]
 }
 
 model Role {
@@ -181,7 +181,6 @@ model PaymentMode {
   transactions Transaction[]
 }
 
-// Chat models
 model Conversation {
   id           Int               @id @default(autoincrement())
   type         ConversationType
@@ -221,5 +220,17 @@ model Message {
   content        String
   kind           String       @default("TEXT")
   createdAt      DateTime     @default(now())
+}
+
+model Invitation {
+  id          Int       @id @default(autoincrement())
+  email       String
+  token       String
+  entitiesId  Int
+  entity      Entity    @relation(fields: [entitiesId], references: [id])
+  expiresAt   DateTime?
+  createdAt   DateTime  @default(now())
+
+  @@unique([email, entitiesId], name: "email_entitiesId")
 }
 

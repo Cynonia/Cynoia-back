@@ -1,5 +1,7 @@
 import { Router } from 'express'
 import { HTTP_STATUS } from './../shared/constants/index.js'
+import { authMiddleware } from '../middlewares/auth.middleware.js'
+import { UserService } from '../services/user.service.js'
 
 interface RouteResponse {
   status: (code: number) => RouteResponse
@@ -7,6 +9,7 @@ interface RouteResponse {
 }
 
 const router = Router()
+router.use(authMiddleware)
 
 /**
  * @swagger
@@ -48,6 +51,33 @@ router.get('/profile', (_req: unknown, res: unknown) => {
     success: false,
     message: 'Get profile endpoint not implemented yet',
   })
+})
+
+/**
+ * @swagger
+ * /api/v1/users/entity/{entityId}:
+ *   get:
+ *     tags: [Users]
+ *     summary: Get users by entity id
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: entityId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: List of users
+ */
+router.get('/entity/:entityId', async (req, res) => {
+  try {
+    const users = await UserService.findByEntityId(Number((req.params as any).entityId))
+    return res.status(200).json({ success: true, data: users })
+  } catch (e: any) {
+    return res.status(400).json({ success: false, message: e.message })
+  }
 })
 
 export default router

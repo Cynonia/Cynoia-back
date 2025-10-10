@@ -65,6 +65,59 @@ const options = {
             },
           },
         },
+        ConversationParticipant: {
+          type: 'object',
+          properties: {
+            userId: { type: 'integer' },
+            conversationId: { type: 'integer' },
+            role: { type: 'string', nullable: true },
+            joinedAt: { type: 'string', format: 'date-time' },
+            lastReadAt: { type: 'string', format: 'date-time', nullable: true },
+            user: {
+              type: 'object',
+              nullable: true,
+              properties: {
+                id: { type: 'integer' },
+                firstName: { type: 'string' },
+                lastName: { type: 'string' },
+              },
+            },
+          },
+        },
+        Message: {
+          type: 'object',
+          properties: {
+            id: { type: 'integer' },
+            conversationId: { type: 'integer' },
+            senderId: { type: 'integer' },
+            content: { type: 'string' },
+            kind: { type: 'string', example: 'TEXT' },
+            createdAt: { type: 'string', format: 'date-time' },
+            sender: {
+              type: 'object',
+              nullable: true,
+              properties: {
+                id: { type: 'integer' },
+                firstName: { type: 'string' },
+                lastName: { type: 'string' },
+              },
+            },
+          },
+        },
+        Conversation: {
+          type: 'object',
+          properties: {
+            id: { type: 'integer' },
+            type: { type: 'string', enum: ['PRIVATE', 'GROUP'] },
+            name: { type: 'string', nullable: true },
+            entitiesId: { type: 'integer' },
+            createdById: { type: 'integer' },
+            createdAt: { type: 'string', format: 'date-time' },
+            updatedAt: { type: 'string', format: 'date-time' },
+            participants: { type: 'array', items: { $ref: '#/components/schemas/ConversationParticipant' } },
+            messages: { type: 'array', items: { $ref: '#/components/schemas/Message' } },
+          },
+        },
         Error: {
           type: 'object',
           properties: {

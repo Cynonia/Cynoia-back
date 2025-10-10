@@ -1,6 +1,6 @@
 
 import { Router } from "express"
-import { getAllEspaces, getEspaceById, createEspace, updateEspace, deleteEspace } from "../controllers/espace.controller.js"
+import { getAllEspaces, getEspaceById, createEspace, updateEspace, deleteEspace, getEspacesByEntityId } from "../controllers/espace.controller.js"
 import { authMiddleware } from "../middlewares/auth.middleware.js"
 
 const router = Router()
@@ -27,6 +27,25 @@ router.use(authMiddleware)
  *         description: List of espaces
  */
 router.get("/", getAllEspaces)
+/**
+ * @swagger
+ * /api/v1/espaces/entity/{entityId}:
+ *   get:
+ *     tags: [Espaces]
+ *     summary: Get espaces by entity id
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: entityId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: List of espaces
+ */
+router.get("/entity/:entityId", getEspacesByEntityId)
 
 /**
  * @swagger
