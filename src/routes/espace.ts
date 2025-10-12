@@ -111,6 +111,13 @@ router.post("/", createEspace)
  *         application/json:
  *           schema:
  *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               entityId:
+ *                 type: integer
+ *               typeEspacesId:
+ *                 type: integer
  *     responses:
  *       200:
  *         description: Espace updated
