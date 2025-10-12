@@ -1,6 +1,17 @@
 import { Resend } from 'resend'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+let resendInstance: Resend | null = null
+
+const getResend = () => {
+  if (!resendInstance) {
+    const apiKey = process.env.RESEND_API_KEY
+    if (!apiKey) {
+      throw new Error('RESEND_API_KEY is not set in environment variables')
+    }
+    resendInstance = new Resend(apiKey)
+  }
+  return resendInstance
+}
 
 export async function sendMail(options: { to: string; subject: string; html: string; from?: string }) {
   try {
@@ -8,6 +19,7 @@ export async function sendMail(options: { to: string; subject: string; html: str
     console.log(`[Mailer] Attempting to send email via Resend to ${options.to}`)
     console.log(`[Mailer] From: ${from}`)
     
+    const resend = getResend()
     const result = await resend.emails.send({
       from,
       to: options.to,
