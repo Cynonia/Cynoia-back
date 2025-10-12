@@ -6,9 +6,13 @@ export const sendInvitation = async (req: Request, res: Response) => {
   try {
     const { entityId, email } = req.body as { entityId: number; email: string }
     if (!entityId || !email) return sendError(res, 'entityId and email are required', null, 400)
+    
+    console.log(`[sendInvitation] Attempting to send invitation to ${email} for entity ${entityId}`)
     const data = await InvitationService.createInvitation(Number(entityId), email)
+    console.log(`[sendInvitation] Successfully sent invitation to ${email}`)
     return sendSuccess(res, data, 'Invitation sent', 201)
   } catch (err: any) {
-    return sendError(res, err.message, null, 400)
+    console.error(`[sendInvitation] Error:`, err)
+    return sendError(res, err.message || 'Failed to send invitation', null, 400)
   }
 }
