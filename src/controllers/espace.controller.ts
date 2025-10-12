@@ -37,7 +37,15 @@ export const createEspace = async (req: Request, res: Response) => {
       return sendError(res, "Unauthorized: Only admin or manager can create an espace", null, 403)
     }
 
-    const data = createEspaceSchema.parse(req.body)
+    // Accept either `entityId` (frontend) or `entitiesId` (existing name).
+    // Normalize into the shape the service/prisma expects.
+    const incoming = { ...req.body }
+    if (incoming.entityId && !incoming.entitiesId) {
+      // keep the original field for clarity, service handles mapping
+      incoming.entitiesId = incoming.entityId
+    }
+
+    const data = createEspaceSchema.parse(incoming)
     const espace = await EspaceService.create(data)
     return sendSuccess(res, espace, "Espace created successfully", 201)
   } catch (err: any) {
@@ -48,7 +56,11 @@ export const createEspace = async (req: Request, res: Response) => {
 
 export const updateEspace = async (req: Request, res: Response) => {
   try {
-    const data = updateEspaceSchema.parse(req.body)
+    const incoming = { ...req.body }
+    if (incoming.entityId && !incoming.entitiesId) {
+      incoming.entitiesId = incoming.entityId
+    }
+    const data = updateEspaceSchema.parse(incoming)
     const espace = await EspaceService.update(Number(req.params.id), data)
     return sendSuccess(res, espace, "Espace updated successfully")
   } catch (err: any) {

@@ -11,6 +11,8 @@ export const createEspaceSchema = z.object({
   images: z.array(z.string().url()).optional(),
   location: z.string().optional(),
   entitiesId: z.number().optional(),
+  // Accept entityId from frontend (more natural name) and map it in service
+  entityId: z.number().optional(),
   typeEspacesId: z.number().optional(),
 })
 
