@@ -4,33 +4,46 @@ import crypto from 'node:crypto'
 
 export class InvitationService {
   static async createInvitation(entityId: number, email: string) {
-    const token = crypto.randomBytes(24).toString('hex')
-    const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 7) // 7 days
+    try {
+      const token = crypto.randomBytes(24).toString('hex')
+      const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 7) // 7 days
 
-    const invitation = await prisma.invitation.upsert({
-      where: { email_entitiesId: { email, entitiesId: entityId } },
-      update: { token, expiresAt },
-      create: { email, token, entitiesId: entityId, expiresAt },
-    })
+      console.log(`[InvitationService] Creating invitation for entity ${entityId}`)
+      const invitation = await prisma.invitation.upsert({
+        where: { email_entitiesId: { email, entitiesId: entityId } },
+        update: { token, expiresAt },
+        create: { email, token, entitiesId: entityId, expiresAt },
+      })
 
-    const entity = await prisma.entity.findUnique({ where: { id: entityId } })
-    const baseUrl = process.env.FRONTEND_URL || 'http://localhost:4200'
-    const link = `${baseUrl}/auth/entity-register?entityId=${entityId}&token=${token}&email=${encodeURIComponent(email)}`
-    const subject = `Invitation to join ${entity?.name ?? 'Cynoia'}`
-    const html = InvitationService.buildInvitationEmail({
-      link,
-      email,
-      entityName: entity?.name ?? 'Cynoia',
-      brandColor: entity?.couleur ?? '#4F46E5',
-      logoUrl: entity?.logo || entity?.avatar || '',
-      expiresInDays: 7,
-      productName: 'Cynoia',
-      baseUrl,
-    })
+      console.log(`[InvitationService] Fetching entity ${entityId}`)
+      const entity = await prisma.entity.findUnique({ where: { id: entityId } })
+      if (!entity) {
+        throw new Error(`Entity with id ${entityId} not found`)
+      }
 
-    await sendMail({ to: email, subject, html })
+      const baseUrl = process.env.FRONTEND_URL || 'http://localhost:4200'
+      const link = `${baseUrl}/auth/entity-register?entityId=${entityId}&token=${token}&email=${encodeURIComponent(email)}`
+      const subject = `Invitation to join ${entity?.name ?? 'Cynoia'}`
+      const html = InvitationService.buildInvitationEmail({
+        link,
+        email,
+        entityName: entity?.name ?? 'Cynoia',
+        brandColor: entity?.couleur ?? '#4F46E5',
+        logoUrl: entity?.logo || entity?.avatar || '',
+        expiresInDays: 7,
+        productName: 'Cynoia',
+        baseUrl,
+      })
 
-    return invitation
+      console.log(`[InvitationService] Sending email to ${email}`)
+      await sendMail({ to: email, subject, html })
+      console.log(`[InvitationService] Email sent successfully to ${email}`)
+
+      return invitation
+    } catch (error: any) {
+      console.error(`[InvitationService] Error creating invitation:`, error)
+      throw new Error(`Failed to send invitation: ${error.message}`)
+    }
   }
 
   static async validateToken(entityId: number, email: string, token: string) {
