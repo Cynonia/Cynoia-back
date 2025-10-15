@@ -31,11 +31,17 @@ export const registerToEntity = async (req: Request, res: Response) => {
     const { entityId, email, token } = body
     if (!token) return sendError(res, 'Invitation token required', null, 400)
 
-    await InvitationService.validateToken(Number(entityId), email, token)
+    const decoded = await InvitationService.validateToken(Number(entityId), email, token)
+    // Enforce same entity and use invited role if present
+    if (Number(decoded.entityId) !== Number(entityId)) {
+      return sendError(res, 'Invitation does not match entity', null, 400)
+    }
+
+    const roleId = decoded.roleId ?? 4
 
     const result = await AuthService.register({
       ...body,
-      roleId: 4,
+      roleId,
       entityId: Number(entityId),
     } as any)
 

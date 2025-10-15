@@ -1,6 +1,6 @@
 
 import { Router } from "express"
-import { getAllTransactions, getTransactionById, createTransaction, updateTransaction, deleteTransaction, getTransactionsByEntityId } from "../controllers/transaction.controller.js"
+import { getAllTransactions, getTransactionById, createTransaction, updateTransaction, deleteTransaction, getTransactionsByEntityId, getTransactionsByUserId } from "../controllers/transaction.controller.js"
 import { authMiddleware } from "../middlewares/auth.middleware.js"
 
 const router = Router()
@@ -46,6 +46,26 @@ router.get("/", getAllTransactions)
  *         description: List of transactions
  */
 router.get("/entity/:entityId", getTransactionsByEntityId)
+
+/**
+ * @swagger
+ * /api/v1/transactions/user/{userId}:
+ *   get:
+ *     tags: [Transactions]
+ *     summary: Get transactions by user id
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: List of transactions
+ */
+router.get("/user/:userId", getTransactionsByUserId)
 
 /**
  * @swagger

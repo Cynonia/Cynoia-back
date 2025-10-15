@@ -32,6 +32,9 @@ router.use(authMiddleware)
  *               email:
  *                 type: string
  *                 format: email
+ *               roleId:
+ *                 type: integer
+ *                 description: Optional role id to assign to the invited user (defaults to client)
  *     responses:
  *       201:
  *         description: Invitation sent

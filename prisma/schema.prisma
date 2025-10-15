@@ -51,6 +51,7 @@ model Role {
   entitiesId Int?
 
   users     User[]
+  invitations Invitation[]
 }
 
 model User {
@@ -69,7 +70,6 @@ model User {
 
   reservations Reservation[]
 
-  // Chat relations
   conversations ConversationParticipant[]
   sentMessages Message[] @relation("UserMessages")
   createdConversations Conversation[] @relation("ConversationCreator")
@@ -228,6 +228,8 @@ model Invitation {
   token       String
   entitiesId  Int
   entity      Entity    @relation(fields: [entitiesId], references: [id])
+  roleId      Int?
+  role        Role?     @relation(fields: [roleId], references: [id])
   expiresAt   DateTime?
   createdAt   DateTime  @default(now())
 

@@ -1,12 +1,19 @@
 import { prisma } from '../config/prisma.js'
 import { sendMail } from '../config/mailer.js'
-import crypto from 'node:crypto'
+import jwt from 'jsonwebtoken'
+import { JWT_SECRET } from '../shared/constants/index.js'
 
 export class InvitationService {
-  static async createInvitation(entityId: number, email: string) {
+  static async createInvitation(entityId: number, email: string, roleId?: number) {
     try {
-      const token = crypto.randomBytes(24).toString('hex')
       const expiresAt = new Date(Date.now() + 1000 * 60 * 60 * 24 * 7) // 7 days
+      // Create a signed token carrying entityId, email and intended roleId
+      const payload = {
+        entityId,
+        email,
+        roleId: roleId ?? 4,
+      }
+      const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' })
 
       console.log(`[InvitationService] Creating invitation for entity ${entityId}`)
       const invitation = await prisma.invitation.upsert({
@@ -22,7 +29,7 @@ export class InvitationService {
       }
 
       const baseUrl = process.env.FRONTEND_URL || 'http://localhost:4200'
-      const link = `${baseUrl}/auth/entity-register?entityId=${entityId}&token=${token}&email=${encodeURIComponent(email)}`
+  const link = `${baseUrl}/auth/entity-register?entityId=${entityId}&token=${encodeURIComponent(token)}&email=${encodeURIComponent(email)}`
       const subject = `Invitation to join ${entity?.name ?? 'Cynoia'}`
       const html = InvitationService.buildInvitationEmail({
         link,
@@ -47,12 +54,23 @@ export class InvitationService {
   }
 
   static async validateToken(entityId: number, email: string, token: string) {
+    // Verify the signed token and ensure it belongs to the same email/entity
+    let decoded: any
+    try {
+      decoded = jwt.verify(token, JWT_SECRET)
+    } catch {
+      throw new Error('Invalid invitation')
+    }
+    if (decoded.email !== email || Number(decoded.entityId) !== Number(entityId)) {
+      throw new Error('Invalid invitation')
+    }
+
     const invitation = await prisma.invitation.findUnique({
       where: { email_entitiesId: { email, entitiesId: entityId } },
     })
     if (!invitation || invitation.token !== token) throw new Error('Invalid invitation')
     if (invitation.expiresAt && invitation.expiresAt.getTime() < Date.now()) throw new Error('Invitation expired')
-    return true
+    return decoded as { entityId: number; email: string; roleId?: number }
   }
 
   static async consume(entityId: number, email: string) {

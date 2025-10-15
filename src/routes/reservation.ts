@@ -1,5 +1,5 @@
 import { Router } from "express"
-import { getAllReservations, getReservationById, createReservation, updateReservation, deleteReservation, getReservationByEntityId, validateReservation, refuseReservation } from "../controllers/reservation.controller.js"
+import { getAllReservations, getReservationById, createReservation, updateReservation, deleteReservation, getReservationByEntityId, validateReservation, refuseReservation, getReservationsByUserId } from "../controllers/reservation.controller.js"
 import { authMiddleware } from "../middlewares/auth.middleware.js"
 
 /**
@@ -65,6 +65,26 @@ router.get("/:id", getReservationById)
  *         description: List of reservations for an entity
  */
 router.get("/entity/:id", getReservationByEntityId)
+
+/**
+ * @swagger
+ * /api/v1/reservations/user/{userId}:
+ *   get:
+ *     tags: [Reservations]
+ *     summary: Get reservations by user id
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: List of reservations for a user
+ */
+router.get("/user/:userId", getReservationsByUserId)
 /**
  * @swagger
  * /api/v1/reservations:
