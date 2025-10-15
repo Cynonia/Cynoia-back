@@ -26,6 +26,18 @@ export class ReservationService {
     }})
   }
 
+  static async getByUserId(userId: number){
+    return prisma.reservation.findMany({
+      where: { userId },
+      include: {
+        espace: true,
+        user: true,
+        reservationEquipements: { include: { equipement: true } },
+        transaction: { include: { paymentMode: true } }
+      }
+    })
+  }
+
   /**
    * Create a new reservation with separate date and time fields
    * @param data - Reservation data with reservationDate (YYYY-MM-DD), startTime (HH:MM), and endTime (HH:MM)
