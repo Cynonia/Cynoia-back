@@ -6,7 +6,6 @@ const baseReservationSchema = z.object({
   endTime: z.string().regex(/^\d{2}:\d{2}(:\d{2})?$/, "Time must be in HH:MM or HH:MM:SS format"),
   status: z.string().min(1),
   espacesId: z.number().optional(),
-  userId: z.number(),
   equipements: z.array(z.object({
     equipementId: z.number(),
     quantity: z.number().int().min(1).optional().default(1),

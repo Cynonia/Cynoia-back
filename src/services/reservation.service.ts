@@ -50,8 +50,7 @@ export class ReservationService {
       startTime: new Date(`1970-01-01T${data.startTime}`),
       endTime: new Date(`1970-01-01T${data.endTime}`),
       status: data.status,
-      espacesId: data.espacesId,
-      userId: data.userId,
+      ...(data.espacesId && { espacesId: data.espacesId }),
     }
     // Create reservation
     const reservation = await prisma.reservation.create({ data: processedData })
