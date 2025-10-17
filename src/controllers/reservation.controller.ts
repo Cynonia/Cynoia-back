@@ -73,7 +73,6 @@ export const getReservationsByUserId = async (req: Request, res: Response) => {
 export const createReservation = async (req: Request, res: Response) => {
   try {
     const body = createReservationSchema.parse(req.body)
-    if (!body.userId) return sendError(res, 'userId is required', null, 400)
     const data = await ReservationService.create(body)
     return sendSuccess(res, formatReservationData(data), "Reservation created successfully", 201)
   } catch (err: any) {
